@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.ik.githubbrowser.repository.Repository;
+import com.ik.githubbrowser.repository.db.entity.RepoItem;
 import com.ik.githubbrowser.repository.db.entity.repos.Repo;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import timber.log.Timber;
 
 public class ReposFragmentViewModel extends ViewModel {
 
-    private MutableLiveData<List<Repo>> repos = new MutableLiveData<>();
+    private MutableLiveData<List<RepoItem>> repos = new MutableLiveData<>();
     private MutableLiveData<String> messages = new MutableLiveData<>();
     private CompositeDisposable disposable = new CompositeDisposable();
 
@@ -34,7 +35,7 @@ public class ReposFragmentViewModel extends ViewModel {
         return messages;
     }
 
-    public LiveData<List<Repo>> getUserRepos() {
+    public LiveData<List<RepoItem>> getUserRepos() {
         fetchUserRepos();
         return repos;
     }
@@ -53,10 +54,10 @@ public class ReposFragmentViewModel extends ViewModel {
         disposable.clear();
     }
 
-    private class ReposObserver extends DisposableObserver<List<Repo>> {
+    private class ReposObserver extends DisposableObserver<List<RepoItem>> {
 
         @Override
-        public void onNext(List<Repo> fetchedRepos) {
+        public void onNext(List<RepoItem> fetchedRepos) {
             repos.setValue(fetchedRepos);
         }
 

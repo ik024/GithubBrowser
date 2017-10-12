@@ -8,10 +8,6 @@ import android.support.annotation.VisibleForTesting;
 import com.ik.githubbrowser.repository.Repository;
 import com.ik.githubbrowser.ui.search_user.SearchUserViewModel;
 
-/**
- * Created by Ismail.Khan2 on 10/10/2017.
- */
-
 public class EventsFragmentViewModelFactory implements ViewModelProvider.Factory {
     private Repository repository;
     private String username;

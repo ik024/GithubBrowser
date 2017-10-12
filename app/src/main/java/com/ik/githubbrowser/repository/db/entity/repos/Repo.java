@@ -37,7 +37,7 @@ public class Repo {
     private boolean has_downloads;
     private String notifications_url;
     private int open_issues_count;
-    private Object description;
+    private String description;
     private String created_at;
     private int watchers;
     private String keys_url;
@@ -344,11 +344,11 @@ public class Repo {
         this.open_issues_count = open_issues_count;
     }
 
-    public Object getDescription() {
+    public String getDescription() {
         return this.description;
     }
 
-    public void setDescription(Object description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 

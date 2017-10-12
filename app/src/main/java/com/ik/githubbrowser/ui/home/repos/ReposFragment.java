@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ public class ReposFragment extends Fragment implements LifecycleOwner {
     private FragmentInteraction mListener;
 
     private ReposFragmentViewModel mViewModel;
+    private RepoItemAdapter mAdapter;
     private BaseActivity mActivity;
     private String username;
 
@@ -68,6 +70,7 @@ public class ReposFragment extends Fragment implements LifecycleOwner {
         ButterKnife.bind(this, view);
         mRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
         mActivity = (BaseActivity) getActivity();
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         ApiService apiService = NetworkInstance.getInstance(getContext()).getApiService();
         Repository repository = new RepositoryImpl(apiService);
@@ -84,9 +87,10 @@ public class ReposFragment extends Fragment implements LifecycleOwner {
         mViewModel.getUserRepos().observe(this, repos -> {
             mProgressBar.setVisibility(View.GONE);
             if (repos.size() > 0) {
-
+                mAdapter = new RepoItemAdapter(repos);
+                mRecyclerView.setAdapter(mAdapter);
             } else {
-
+                mActivity.showMessage("No Repositories");
             }
         });
 
