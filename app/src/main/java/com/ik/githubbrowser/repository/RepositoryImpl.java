@@ -6,6 +6,8 @@ import com.ik.githubbrowser.repository.db.entity.UserInfo;
 import com.ik.githubbrowser.repository.db.entity.commits.CommitList;
 import com.ik.githubbrowser.repository.db.entity.commits.CommitObject;
 import com.ik.githubbrowser.repository.db.entity.events.Event;
+import com.ik.githubbrowser.repository.db.entity.followers.Follower;
+import com.ik.githubbrowser.repository.db.entity.followings.Following;
 import com.ik.githubbrowser.repository.db.entity.repos.Repo;
 import com.ik.githubbrowser.repository.network.ApiService;
 
@@ -59,6 +61,16 @@ public class RepositoryImpl implements Repository{
                     }
                     return Observable.just(repoItemList);
                 });
+    }
+
+    @Override
+    public Observable<List<Follower>> getUserFollowers(String userName) {
+        return apiService.getUserFollowers(userName);
+    }
+
+    @Override
+    public Observable<List<Following>> getUserFollowings(String userName) {
+        return apiService.getUserFollowing(userName);
     }
 
 

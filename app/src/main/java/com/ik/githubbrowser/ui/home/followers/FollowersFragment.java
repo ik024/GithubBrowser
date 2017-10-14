@@ -1,4 +1,4 @@
-package com.ik.githubbrowser.ui.home.events;
+package com.ik.githubbrowser.ui.home.followers;
 
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
@@ -18,40 +18,37 @@ import com.ik.githubbrowser.BaseActivity;
 import com.ik.githubbrowser.R;
 import com.ik.githubbrowser.repository.Repository;
 import com.ik.githubbrowser.repository.RepositoryImpl;
-import com.ik.githubbrowser.repository.db.entity.events.Event;
 import com.ik.githubbrowser.repository.network.ApiService;
 import com.ik.githubbrowser.repository.network.NetworkInstance;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.ik.githubbrowser.AppConstants.KEY_USERNAME;
 
-
-public class EventsFragment extends Fragment implements LifecycleOwner {
+public class FollowersFragment extends Fragment implements LifecycleOwner{
 
     private LifecycleRegistry mRegistry = new LifecycleRegistry(this);
-    private String mUsername;
-    private BaseActivity mActivity;
     private FragmentInteraction mListener;
 
-    @BindView(R.id.rv_activity)
+    @BindView(R.id.rv_followers)
     RecyclerView mRecyclerView;
+
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
 
-    private EventItemAdapter mAdapter;
-    private EventsFragmentViewModel mViewModel;
+    private String mUsername;
+    private FollowerItemAdapter mAdapter;
+    private FollowersFragmentViewModel mViewModel;
+    private BaseActivity mActivity;
 
-    public EventsFragment() {
+    public FollowersFragment() {
         // Required empty public constructor
     }
 
 
-    public static EventsFragment newInstance(String username) {
-        EventsFragment fragment = new EventsFragment();
+    public static FollowersFragment newInstance(String username) {
+        FollowersFragment fragment = new FollowersFragment();
         Bundle args = new Bundle();
         args.putString(KEY_USERNAME, username);
         fragment.setArguments(args);
@@ -69,36 +66,28 @@ public class EventsFragment extends Fragment implements LifecycleOwner {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_activity, container, false);
+        View view = inflater.inflate(R.layout.fragment_followers, container, false);
         ButterKnife.bind(this, view);
+
+        mRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mActivity = (BaseActivity) getActivity();
 
         ApiService apiService = NetworkInstance.getInstance(getContext()).getApiService();
         Repository repository = new RepositoryImpl(apiService);
-        EventsFragmentViewModelFactory factory
-                = new EventsFragmentViewModelFactory(repository, mUsername);
+        FollowersFragmentViewModelFactory factory = new FollowersFragmentViewModelFactory(repository, mUsername);
+        mViewModel = ViewModelProviders.of(getActivity(), factory).get(FollowersFragmentViewModel.class);
 
-        mViewModel = ViewModelProviders.of(getActivity(), factory).get(EventsFragmentViewModel.class);
-
-        mActivity = (BaseActivity) getActivity();
-
-        mProgressBar.setVisibility(View.VISIBLE);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        mViewModel.observerMsgs().observe(this, msg -> mActivity.showMessage(msg));
-
-        mViewModel.getEvents().observe(this, this::populateRecyclerView);
-
+        mViewModel.getFollowers().observe(this, followers -> {
+            mProgressBar.setVisibility(View.GONE);
+            if (followers.size() > 0) {
+                mAdapter = new FollowerItemAdapter(followers);
+                mRecyclerView.setAdapter(mAdapter);
+            } else {
+                mActivity.showMessage("No Followsers");
+            }
+        });
         return view;
-    }
-
-    private void populateRecyclerView(List<Event> list) {
-        mProgressBar.setVisibility(View.GONE);
-        if (list.size() > 0) {
-            mAdapter = new EventItemAdapter(list);
-            mRecyclerView.setAdapter(mAdapter);
-        } else {
-            mActivity.showMessage(getString(R.string.no_events));
-        }
     }
 
     @Override
@@ -106,7 +95,6 @@ public class EventsFragment extends Fragment implements LifecycleOwner {
         super.onAttach(context);
         if (context instanceof FragmentInteraction) {
             mListener = (FragmentInteraction) context;
-            mRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement FragmentInteraction");

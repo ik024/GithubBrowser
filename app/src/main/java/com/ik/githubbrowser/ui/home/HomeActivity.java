@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import com.ik.githubbrowser.BaseActivity;
 import com.ik.githubbrowser.R;
 import com.ik.githubbrowser.ui.home.events.EventsFragment;
+import com.ik.githubbrowser.ui.home.followers.FollowersFragment;
+import com.ik.githubbrowser.ui.home.followings.FollowingsFragment;
 import com.ik.githubbrowser.ui.home.repos.ReposFragment;
 
 import butterknife.BindView;
@@ -25,7 +27,9 @@ import static com.ik.githubbrowser.AppConstants.KEY_USERNAME;
 
 public class HomeActivity extends BaseActivity implements
         EventsFragment.FragmentInteraction,
-        ReposFragment.FragmentInteraction{
+        ReposFragment.FragmentInteraction,
+        FollowersFragment.FragmentInteraction,
+        FollowingsFragment.FragmentInteraction {
 
     private final int NUM_PAGES = 4;
 
@@ -87,9 +91,9 @@ public class HomeActivity extends BaseActivity implements
                 case 1:
                     return ReposFragment.newInstance(username);
                 case 2:
-                    return EventsFragment.newInstance(username);
+                    return FollowersFragment.newInstance(username);
                 case 3:
-                    return EventsFragment.newInstance(username);
+                    return FollowingsFragment.newInstance(username);
             }
             return null;
         }

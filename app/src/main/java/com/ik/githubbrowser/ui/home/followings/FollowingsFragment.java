@@ -1,10 +1,11 @@
-package com.ik.githubbrowser.ui.home.events;
+package com.ik.githubbrowser.ui.home.followings;
 
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,40 +19,35 @@ import com.ik.githubbrowser.BaseActivity;
 import com.ik.githubbrowser.R;
 import com.ik.githubbrowser.repository.Repository;
 import com.ik.githubbrowser.repository.RepositoryImpl;
-import com.ik.githubbrowser.repository.db.entity.events.Event;
 import com.ik.githubbrowser.repository.network.ApiService;
 import com.ik.githubbrowser.repository.network.NetworkInstance;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.ik.githubbrowser.AppConstants.KEY_USERNAME;
 
+public class FollowingsFragment extends Fragment implements LifecycleOwner{
 
-public class EventsFragment extends Fragment implements LifecycleOwner {
-
-    private LifecycleRegistry mRegistry = new LifecycleRegistry(this);
-    private String mUsername;
-    private BaseActivity mActivity;
-    private FragmentInteraction mListener;
-
-    @BindView(R.id.rv_activity)
+    @BindView(R.id.rv_followings)
     RecyclerView mRecyclerView;
+
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
 
-    private EventItemAdapter mAdapter;
-    private EventsFragmentViewModel mViewModel;
+    private LifecycleRegistry mRegistry = new LifecycleRegistry(this);
+    private FragmentInteraction mListener;
+    private BaseActivity mActivity;
+    private FollowingsFragmentViewModel mViewModel;
+    private FollowingItemAdapter mAdapter;
+    private String mUsername;
 
-    public EventsFragment() {
+    public FollowingsFragment() {
         // Required empty public constructor
     }
 
-
-    public static EventsFragment newInstance(String username) {
-        EventsFragment fragment = new EventsFragment();
+    public static FollowingsFragment newInstance(String username) {
+        FollowingsFragment fragment = new FollowingsFragment();
         Bundle args = new Bundle();
         args.putString(KEY_USERNAME, username);
         fragment.setArguments(args);
@@ -69,36 +65,29 @@ public class EventsFragment extends Fragment implements LifecycleOwner {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_activity, container, false);
+        View view = inflater.inflate(R.layout.fragment_followings, container, false);
         ButterKnife.bind(this, view);
+
+        mRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mActivity  = (BaseActivity) getActivity();
 
         ApiService apiService = NetworkInstance.getInstance(getContext()).getApiService();
         Repository repository = new RepositoryImpl(apiService);
-        EventsFragmentViewModelFactory factory
-                = new EventsFragmentViewModelFactory(repository, mUsername);
+        FollowingFragmentViewModelFactory factory = new FollowingFragmentViewModelFactory(repository, mUsername);
 
-        mViewModel = ViewModelProviders.of(getActivity(), factory).get(EventsFragmentViewModel.class);
+        mViewModel = ViewModelProviders.of(getActivity(), factory).get(FollowingsFragmentViewModel.class);
 
-        mActivity = (BaseActivity) getActivity();
-
-        mProgressBar.setVisibility(View.VISIBLE);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        mViewModel.observerMsgs().observe(this, msg -> mActivity.showMessage(msg));
-
-        mViewModel.getEvents().observe(this, this::populateRecyclerView);
-
+        mViewModel.getFollowings().observe(this, followings -> {
+            mProgressBar.setVisibility(View.GONE);
+            if (followings.size() > 0) {
+                mAdapter = new FollowingItemAdapter(followings);
+                mRecyclerView.setAdapter(mAdapter);
+            } else {
+                mActivity.showMessage("Not Following anyone.");
+            }
+        });
         return view;
-    }
-
-    private void populateRecyclerView(List<Event> list) {
-        mProgressBar.setVisibility(View.GONE);
-        if (list.size() > 0) {
-            mAdapter = new EventItemAdapter(list);
-            mRecyclerView.setAdapter(mAdapter);
-        } else {
-            mActivity.showMessage(getString(R.string.no_events));
-        }
     }
 
     @Override
@@ -106,7 +95,6 @@ public class EventsFragment extends Fragment implements LifecycleOwner {
         super.onAttach(context);
         if (context instanceof FragmentInteraction) {
             mListener = (FragmentInteraction) context;
-            mRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement FragmentInteraction");
@@ -117,8 +105,8 @@ public class EventsFragment extends Fragment implements LifecycleOwner {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        mViewModel.clear();
         mRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
+        mViewModel.clear();
     }
 
     @Override
@@ -127,5 +115,6 @@ public class EventsFragment extends Fragment implements LifecycleOwner {
     }
 
     public interface FragmentInteraction {
+
     }
 }

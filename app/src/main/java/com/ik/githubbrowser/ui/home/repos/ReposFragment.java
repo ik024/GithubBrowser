@@ -104,7 +104,7 @@ public class ReposFragment extends Fragment implements LifecycleOwner {
             mListener = (FragmentInteraction) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement FragmentInteraction");
         }
     }
 

@@ -1,40 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tool="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_margin="16dp">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_event_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textColor="@color/titleTextColor"
+                tool:text="EventName" />
+
+            <TextView
+                android:id="@+id/tv_repository_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
+                android:textColor="@color/subTitleTextColor"
+                tool:text="Repository Name" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/tv_event_name"
+            android:id="@+id/tv_created_at"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:layout_marginEnd="10dp"
-            tool:text="EventName"/>
-
-        <TextView
-            android:id="@+id/tv_repository_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:layout_marginBottom="16dp"
             android:layout_marginEnd="5dp"
-            tool:text="Repository Name"/>
+            android:textColor="@color/subTitleTextColor"
+            tool:text="created at" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_created_at"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/darker_gray"
-        android:layout_marginEnd="5dp"
-        tool:text="created at"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimary" />
 
 </LinearLayout>

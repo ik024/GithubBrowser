@@ -4,6 +4,8 @@ import com.ik.githubbrowser.repository.db.entity.UserInfo;
 import com.ik.githubbrowser.repository.db.entity.commits.CommitList;
 import com.ik.githubbrowser.repository.db.entity.commits.CommitObject;
 import com.ik.githubbrowser.repository.db.entity.events.Event;
+import com.ik.githubbrowser.repository.db.entity.followers.Follower;
+import com.ik.githubbrowser.repository.db.entity.followings.Following;
 import com.ik.githubbrowser.repository.db.entity.repos.Repo;
 
 import java.util.List;
@@ -27,4 +29,10 @@ public interface ApiService {
 
     @GET("repos/{userName}/{repoName}/commits")
     Call<List<CommitObject>> getRepoCommits(@Path("userName") String userName, @Path("repoName") String repoName);
+
+    @GET("users/{userName}/followers")
+    Observable<List<Follower>> getUserFollowers(@Path("userName") String userName);
+
+    @GET("users/{userName}/following")
+    Observable<List<Following>> getUserFollowing(@Path("userName") String userName);
 }
