@@ -24,6 +24,14 @@
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textColor="@color/titleTextColor"
+                android:text="Username"
+                tools:text="Username"/>
         </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.TabLayout

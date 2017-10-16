@@ -36,7 +36,8 @@ public class ReposFragmentViewModel extends ViewModel {
     }
 
     public LiveData<List<RepoItem>> getUserRepos() {
-        fetchUserRepos();
+        if (repos.getValue() == null || repos.getValue().size() == 0)
+            fetchUserRepos();
         return repos;
     }
 
@@ -69,7 +70,7 @@ public class ReposFragmentViewModel extends ViewModel {
 
         @Override
         public void onComplete() {
-
+            messages.setValue("");
         }
     }
 }

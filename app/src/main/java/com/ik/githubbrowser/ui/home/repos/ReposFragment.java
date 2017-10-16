@@ -23,6 +23,7 @@ import com.ik.githubbrowser.repository.network.NetworkInstance;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 import static com.ik.githubbrowser.AppConstants.KEY_USERNAME;
 
@@ -79,16 +80,26 @@ public class ReposFragment extends Fragment implements LifecycleOwner {
 
         mProgressBar.setVisibility(View.VISIBLE);
         mViewModel.observerMessages().observe(this, msg -> {
+
                     mProgressBar.setVisibility(View.GONE);
                     mActivity.showMessage(msg);
                 }
         );
 
+
         mViewModel.getUserRepos().observe(this, repos -> {
-            mProgressBar.setVisibility(View.GONE);
+
             if (repos.size() > 0) {
-                mAdapter = new RepoItemAdapter(repos);
-                mRecyclerView.setAdapter(mAdapter);
+                if (mAdapter == null) {
+                    mAdapter = new RepoItemAdapter(repos);
+                } else {
+                    mAdapter.updateList(repos);
+                }
+
+                if (mRecyclerView.getAdapter() == null) {
+                    mRecyclerView.setAdapter(mAdapter);
+                }
+
             } else {
                 mActivity.showMessage("No Repositories");
             }

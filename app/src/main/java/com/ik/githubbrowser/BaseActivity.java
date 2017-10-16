@@ -2,6 +2,7 @@ package com.ik.githubbrowser;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 public class BaseActivity extends AppCompatActivity {
@@ -12,7 +13,8 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void showMessage(String message) {
-        Toast.makeText(BaseActivity.this, message, Toast.LENGTH_SHORT).show();
+        if (!TextUtils.isEmpty(message))
+            Toast.makeText(BaseActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
     public void showMessage(int resId) {

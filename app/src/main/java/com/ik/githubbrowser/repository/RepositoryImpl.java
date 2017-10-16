@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import timber.log.Timber;
 
 
 public class RepositoryImpl implements Repository{
@@ -46,20 +49,23 @@ public class RepositoryImpl implements Repository{
         return apiService.getUserRepos(userName)
                 .flatMap(repos -> {
                     List<RepoItem> repoItemList = new ArrayList<>();
-                    for (Repo repo : repos) {
-                        RepoItem repoItem = new RepoItem();
-                        String repoName = repo.getName();
-                        String repoDesc = repo.getDescription();
+                    return Observable.create(e -> {
+                        for (Repo repo : repos) {
+                            RepoItem repoItem = new RepoItem();
+                            String repoName = repo.getName();
+                            String repoDesc = repo.getDescription();
 
-                        List<CommitObject> commits = apiService.getRepoCommits(userName, repoName).execute().body();
-                        repoItem.setRepoName(repoName);
-                        repoItem.setRepoDesc(repoDesc == null ? "No description" : repoDesc);
-                        repoItem.setCommitCount(commits == null ? 0 : commits.size());
-                        //TODO: get issues
-                        repoItem.setIssueCount(0);
-                        repoItemList.add(repoItem);
-                    }
-                    return Observable.just(repoItemList);
+                            List<CommitObject> commits = apiService.getRepoCommits(userName, repoName).execute().body();
+                            repoItem.setRepoName(repoName);
+                            repoItem.setRepoDesc(repoDesc == null ? "No description" : repoDesc);
+                            repoItem.setCommitCount(commits == null ? 0 : commits.size());
+                            //TODO: get issues
+                            repoItem.setIssueCount(0);
+                            repoItemList.add(repoItem);
+                            e.onNext(repoItemList);
+                        }
+                        e.onComplete();
+                    });
                 });
     }
 

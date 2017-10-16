@@ -45,6 +45,11 @@ public class RepoItemAdapter extends RecyclerView.Adapter<RepoItemAdapter.MyView
         return mList.size();
     }
 
+    public void updateList(List<RepoItem> repos) {
+        mList = repos;
+        notifyDataSetChanged();
+    }
+
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.tv_repo_name)
