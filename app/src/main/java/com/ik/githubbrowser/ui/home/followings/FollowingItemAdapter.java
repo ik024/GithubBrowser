@@ -43,7 +43,12 @@ public class FollowingItemAdapter extends RecyclerView.Adapter<FollowingItemAdap
         return mList.size();
     }
 
-     class MyViewHolder extends RecyclerView.ViewHolder {
+    public void updateList(List<Following> followings) {
+        mList = followings;
+        notifyDataSetChanged();;
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
 
          @BindView(R.id.iv_profile_pic)
          ImageView ivProfilePic;

@@ -5,7 +5,7 @@
     android:orientation="vertical"
     tools:context="com.ik.githubbrowser.ui.home.repos.ReposFragment">
 
-    <android.support.v7.widget.RecyclerView
+    <com.ik.githubbrowser.MyRecyclerView
         android:id="@+id/rv_repos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,4 +17,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/rv_repos"
         android:layout_centerHorizontal="true"/>
+
+    <include
+        android:id="@+id/layout_empty_view"
+        layout="@layout/empty_view"
+        android:visibility="gone"/>
 </RelativeLayout>

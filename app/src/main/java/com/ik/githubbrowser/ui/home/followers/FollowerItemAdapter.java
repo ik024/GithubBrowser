@@ -42,6 +42,11 @@ public class FollowerItemAdapter extends RecyclerView.Adapter<FollowerItemAdapte
         return mList.size();
     }
 
+    public void updateList(List<Follower> followers) {
+        mList = followers;
+        notifyDataSetChanged();
+    }
+
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.iv_profile_pic)

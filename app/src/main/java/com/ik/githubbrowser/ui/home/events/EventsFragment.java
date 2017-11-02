@@ -8,19 +8,21 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.ik.githubbrowser.BaseActivity;
+import com.ik.githubbrowser.MyRecyclerView;
 import com.ik.githubbrowser.R;
 import com.ik.githubbrowser.repository.Repository;
 import com.ik.githubbrowser.repository.RepositoryImpl;
 import com.ik.githubbrowser.repository.db.entity.events.Event;
 import com.ik.githubbrowser.repository.network.ApiService;
 import com.ik.githubbrowser.repository.network.NetworkInstance;
+import com.ik.githubbrowser.ui.home.EmptyLayout;
 
 import java.util.List;
 
@@ -37,18 +39,20 @@ public class EventsFragment extends Fragment implements LifecycleOwner {
     private BaseActivity mActivity;
     private FragmentInteraction mListener;
 
-    @BindView(R.id.rv_activity)
-    RecyclerView mRecyclerView;
+    @BindView(R.id.rv_events)
+    MyRecyclerView mRecyclerView;
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
+    @BindView(R.id.layout_empty_view)
+    View mEmptyView;
 
     private EventItemAdapter mAdapter;
     private EventsFragmentViewModel mViewModel;
+    private EmptyLayout mIncludedEmptyLayout = new EmptyLayout();
 
     public EventsFragment() {
         // Required empty public constructor
     }
-
 
     public static EventsFragment newInstance(String username) {
         EventsFragment fragment = new EventsFragment();
@@ -69,8 +73,11 @@ public class EventsFragment extends Fragment implements LifecycleOwner {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_activity, container, false);
+        View view = inflater.inflate(R.layout.fragment_event, container, false);
         ButterKnife.bind(this, view);
+
+        ButterKnife.bind(mIncludedEmptyLayout, mEmptyView);
+        mIncludedEmptyLayout.tvEmptyView.setText(R.string.empty_events_list);
 
         ApiService apiService = NetworkInstance.getInstance(getContext()).getApiService();
         Repository repository = new RepositoryImpl(apiService);
@@ -82,6 +89,7 @@ public class EventsFragment extends Fragment implements LifecycleOwner {
         mActivity = (BaseActivity) getActivity();
 
         mProgressBar.setVisibility(View.VISIBLE);
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mViewModel.observerMsgs().observe(this, msg -> mActivity.showMessage(msg));
@@ -93,12 +101,14 @@ public class EventsFragment extends Fragment implements LifecycleOwner {
 
     private void populateRecyclerView(List<Event> list) {
         mProgressBar.setVisibility(View.GONE);
-        if (list.size() > 0) {
+        if (mAdapter == null) {
             mAdapter = new EventItemAdapter(list);
             mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.setEmptyView(mEmptyView);
         } else {
-            mActivity.showMessage(getString(R.string.no_events));
+            mAdapter.updateList(list);
         }
+
     }
 
     @Override
@@ -128,4 +138,5 @@ public class EventsFragment extends Fragment implements LifecycleOwner {
 
     public interface FragmentInteraction {
     }
+
 }
