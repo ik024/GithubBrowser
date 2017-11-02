@@ -45,6 +45,7 @@ public class RepoItemAdapter extends RecyclerView.Adapter<RepoItemAdapter.MyView
         return mList.size();
     }
 
+
     public void updateList(List<RepoItem> repos) {
         mList = repos;
         notifyDataSetChanged();

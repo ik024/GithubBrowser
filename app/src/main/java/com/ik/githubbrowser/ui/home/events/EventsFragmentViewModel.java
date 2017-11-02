@@ -37,6 +37,7 @@ public class EventsFragmentViewModel extends ViewModel{
     public LiveData<List<Event>> getEvents() {
         fetchEvents();
         return events;
+
     }
 
     private void fetchEvents() {

@@ -15,11 +15,13 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.ik.githubbrowser.BaseActivity;
+import com.ik.githubbrowser.MyRecyclerView;
 import com.ik.githubbrowser.R;
 import com.ik.githubbrowser.repository.Repository;
 import com.ik.githubbrowser.repository.RepositoryImpl;
 import com.ik.githubbrowser.repository.network.ApiService;
 import com.ik.githubbrowser.repository.network.NetworkInstance;
+import com.ik.githubbrowser.ui.home.EmptyLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,10 +33,15 @@ import static com.ik.githubbrowser.AppConstants.KEY_USERNAME;
 public class ReposFragment extends Fragment implements LifecycleOwner {
 
     @BindView(R.id.rv_repos)
-    RecyclerView mRecyclerView;
+    MyRecyclerView mRecyclerView;
 
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
+
+    @BindView(R.id.layout_empty_view)
+    View mEmptyView;
+
+    private EmptyLayout mIncludedEmptyLayout = new EmptyLayout();
 
     private LifecycleRegistry mRegistry = new LifecycleRegistry(this);
     private FragmentInteraction mListener;
@@ -69,6 +76,10 @@ public class ReposFragment extends Fragment implements LifecycleOwner {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_repos, container, false);
         ButterKnife.bind(this, view);
+
+        ButterKnife.bind(mIncludedEmptyLayout, mEmptyView);
+        mIncludedEmptyLayout.tvEmptyView.setText(R.string.empty_repo_list);
+
         mRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
         mActivity = (BaseActivity) getActivity();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -88,21 +99,17 @@ public class ReposFragment extends Fragment implements LifecycleOwner {
 
 
         mViewModel.getUserRepos().observe(this, repos -> {
-
-            if (repos.size() > 0) {
-                if (mAdapter == null) {
-                    mAdapter = new RepoItemAdapter(repos);
-                } else {
-                    mAdapter.updateList(repos);
-                }
-
-                if (mRecyclerView.getAdapter() == null) {
-                    mRecyclerView.setAdapter(mAdapter);
-                }
-
+            if (mAdapter == null) {
+                mAdapter = new RepoItemAdapter(repos);
+                mRecyclerView.setEmptyView(mEmptyView);
+                mRecyclerView.setAdapter(mAdapter);
             } else {
-                mActivity.showMessage("No Repositories");
+                mAdapter.updateList(repos);
             }
+
+                /*if (mRecyclerView.getAdapter() == null) {
+                    mRecyclerView.setAdapter(mAdapter);
+                }*/
         });
 
         return view;

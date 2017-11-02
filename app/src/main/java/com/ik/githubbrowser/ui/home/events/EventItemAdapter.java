@@ -23,6 +23,10 @@ class EventItemAdapter extends RecyclerView.Adapter<EventItemAdapter.MyViewHolde
         mList = list;
     }
 
+    public void updateList(List<Event> list) {
+        mList = list;
+        notifyDataSetChanged();
+    }
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())

@@ -16,28 +16,34 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.ik.githubbrowser.BaseActivity;
+import com.ik.githubbrowser.MyRecyclerView;
 import com.ik.githubbrowser.R;
 import com.ik.githubbrowser.repository.Repository;
 import com.ik.githubbrowser.repository.RepositoryImpl;
 import com.ik.githubbrowser.repository.network.ApiService;
 import com.ik.githubbrowser.repository.network.NetworkInstance;
+import com.ik.githubbrowser.ui.home.EmptyLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.ik.githubbrowser.AppConstants.KEY_USERNAME;
 
-public class FollowingsFragment extends Fragment implements LifecycleOwner{
+public class FollowingsFragment extends Fragment implements LifecycleOwner {
 
     @BindView(R.id.rv_followings)
-    RecyclerView mRecyclerView;
+    MyRecyclerView mRecyclerView;
 
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
 
+    @BindView(R.id.layout_empty_view)
+    View mEmptyView;
+
+    private EmptyLayout mIncludedEmptyLayout = new EmptyLayout();
+
     private LifecycleRegistry mRegistry = new LifecycleRegistry(this);
     private FragmentInteraction mListener;
-    private BaseActivity mActivity;
     private FollowingsFragmentViewModel mViewModel;
     private FollowingItemAdapter mAdapter;
     private String mUsername;
@@ -68,9 +74,11 @@ public class FollowingsFragment extends Fragment implements LifecycleOwner{
         View view = inflater.inflate(R.layout.fragment_followings, container, false);
         ButterKnife.bind(this, view);
 
+        ButterKnife.bind(mIncludedEmptyLayout, mEmptyView);
+        mIncludedEmptyLayout.tvEmptyView.setText(R.string.empty_following_list);
+
         mRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mActivity  = (BaseActivity) getActivity();
 
         ApiService apiService = NetworkInstance.getInstance(getContext()).getApiService();
         Repository repository = new RepositoryImpl(apiService);
@@ -80,11 +88,12 @@ public class FollowingsFragment extends Fragment implements LifecycleOwner{
 
         mViewModel.getFollowings().observe(this, followings -> {
             mProgressBar.setVisibility(View.GONE);
-            if (followings.size() > 0) {
+            if (mAdapter == null) {
                 mAdapter = new FollowingItemAdapter(followings);
+                mRecyclerView.setEmptyView(mEmptyView);
                 mRecyclerView.setAdapter(mAdapter);
             } else {
-                mActivity.showMessage("Not Following anyone.");
+                mAdapter.updateList(followings);
             }
         });
         return view;

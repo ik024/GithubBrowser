@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:ems="10"
+        android:text="ik024"
         android:inputType="textPersonName"
         android:textColor="@color/titleTextColor"
         app:layout_constraintHorizontal_bias="0.0"
