@@ -3,11 +3,11 @@
 buildscript {
     repositories {
         jcenter()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
-        classpath 'me.tatarka:gradle-retrolambda:3.2.0'
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.8.1'
+        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'
     }
 }
 
@@ -15,6 +15,7 @@ allprojects {
     repositories {
         jcenter()
         maven { url 'https://maven.google.com' }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 
     ext{
@@ -29,7 +30,7 @@ allprojects {
         mockito_version = "1.10.19"
         constraint_layout_version = "1.0.2"
         timber_version = "4.5.1"
-        butterknife_version = "8.8.1"
+        butterknife_version = "9.0.0-SNAPSHOT"
         rxbinding_version = "2.0.0"
         retrofit_version = "2.3.0"
         okhttp_version = "3.6.0"

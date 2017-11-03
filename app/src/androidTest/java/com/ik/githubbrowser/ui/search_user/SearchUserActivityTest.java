@@ -21,6 +21,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import timber.log.Timber;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
@@ -52,10 +54,6 @@ public class SearchUserActivityTest {
         factory.setViewModel(viewModel);
     }
 
-    @Before
-    public void setup(){
-    }
-
     @Test
     public void isCorrectLayoutDisplayed() {
         onView(ViewMatchers.withId(R.id.et_username)).check(matches(isDisplayed()));
@@ -63,23 +61,25 @@ public class SearchUserActivityTest {
 
     @Test
     public void check_invalidUserErrorMsgShown_onInvalidInput() {
+        userExists.postValue(false);
+        when(viewModel.doesUserExists(USER_NAME)).thenReturn(userExists);
         onView(withId(R.id.et_username)).perform(typeText(USER_NAME));
         onView(withId(R.id.bt_login)).perform(click());
-        userExists.postValue(false);
         onView(withId(R.id.tv_error)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void check_noInvalidUserErrorMsgShown_onValidInput() {
+    public void check_goesToHomeActivity_onValidInput() {
+        userExists.postValue(true);
+        when(viewModel.doesUserExists(USER_NAME)).thenReturn(userExists);
         onView(withId(R.id.et_username)).perform(typeText(USER_NAME));
         onView(withId(R.id.bt_login)).perform(click());
-        userExists.postValue(true);
-        onView(withId(R.id.tv_error)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.tabs)).check(matches((isDisplayed())));
     }
 
 
     @AfterClass
-    public void tearDown() {
+    public static void afterClass() {
         viewModel = null;
         factory.setViewModel(viewModel);
     }

@@ -21,6 +21,7 @@ import com.ik.githubbrowser.repository.network.NetworkInstance;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 
 public class SearchUserActivity extends BaseActivity implements LifecycleRegistryOwner {
@@ -91,6 +92,7 @@ public class SearchUserActivity extends BaseActivity implements LifecycleRegistr
     }
 
     private void navigateToHomeIfUserExists(boolean userExists) {
+        Timber.i("test-navigateToHomeIfUserExists: "+userExists);
         progressBar.setVisibility(View.GONE);
 
         if (userExists) {

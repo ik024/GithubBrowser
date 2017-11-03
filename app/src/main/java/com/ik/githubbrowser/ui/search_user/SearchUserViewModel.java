@@ -35,12 +35,7 @@ public class SearchUserViewModel extends ViewModel {
 
     Observable<Boolean> getUserInfo(String userName) {
         return repository.getUserInfo(userName)
-                .map(new Function<UserInfo, Boolean>() {
-                    @Override
-                    public Boolean apply(@NonNull UserInfo userInfo) throws Exception {
-                        return userInfo != null && userInfo.getName() != null;
-                    }
-                })
+                .map(userInfo -> userInfo != null && userInfo.getName() != null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
