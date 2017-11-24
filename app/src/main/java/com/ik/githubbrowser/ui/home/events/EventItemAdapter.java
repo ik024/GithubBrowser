@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ik.githubbrowser.AppUtils;
 import com.ik.githubbrowser.R;
 import com.ik.githubbrowser.repository.db.entity.events.Event;
 
@@ -40,7 +41,7 @@ class EventItemAdapter extends RecyclerView.Adapter<EventItemAdapter.MyViewHolde
         Event item = mList.get(position);
         holder.tvEventName.setText(item.getType());
         holder.tvRepositoryName.setText(item.getRepo().getName());
-        holder.tvCreatedAt.setText(item.getCreated_at());
+        holder.tvCreatedAt.setText(AppUtils.dateFormat(item.getCreated_at()));
     }
 
     @Override
