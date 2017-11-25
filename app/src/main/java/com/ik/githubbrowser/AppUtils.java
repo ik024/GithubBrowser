@@ -3,6 +3,7 @@ package com.ik.githubbrowser;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import timber.log.Timber;
 
@@ -19,6 +20,7 @@ public class AppUtils {
      */
     public static String dateFormat (String timestamp) {
         SimpleDateFormat githubDateFormat = new SimpleDateFormat("yyyy-mm-dd'T'hh:mm:ss'Z'");
+        githubDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         SimpleDateFormat viewFriendlyDateFormat = new SimpleDateFormat("dd/MMM/yyyy hh:mm:ss aaa");
         String viewFriendlyDate = "";
         try {
