@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.ik.githubbrowser.R;
 import com.ik.githubbrowser.repository.db.entity.followings.Following;
+import com.ik.githubbrowser.repository.network.NetworkInstance;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -19,6 +21,7 @@ import butterknife.ButterKnife;
 public class FollowingItemAdapter extends RecyclerView.Adapter<FollowingItemAdapter.MyViewHolder> {
 
     private List<Following> mList;
+    private Picasso mPicasso;
 
     public FollowingItemAdapter (List<Following> list) {
         mList = list;
@@ -29,6 +32,8 @@ public class FollowingItemAdapter extends RecyclerView.Adapter<FollowingItemAdap
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_follow, parent, false);
 
+        mPicasso = NetworkInstance.getInstance(parent.getContext()).getPicasso();
+
         return new MyViewHolder(view);
     }
 
@@ -36,6 +41,7 @@ public class FollowingItemAdapter extends RecyclerView.Adapter<FollowingItemAdap
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Following following = mList.get(position);
         holder.tvName.setText(following.getLogin());
+        mPicasso.load(following.getAvatar_url()).into(holder.ivProfilePic);
     }
 
     @Override
@@ -45,7 +51,7 @@ public class FollowingItemAdapter extends RecyclerView.Adapter<FollowingItemAdap
 
     public void updateList(List<Following> followings) {
         mList = followings;
-        notifyDataSetChanged();;
+        notifyDataSetChanged();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
