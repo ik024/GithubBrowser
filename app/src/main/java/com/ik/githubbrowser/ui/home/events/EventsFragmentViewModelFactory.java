@@ -31,5 +31,8 @@ public class EventsFragmentViewModelFactory implements ViewModelProvider.Factory
         viewModel = (EventsFragmentViewModel) model;
     }
 
+    public static void clear(){
+        viewModel = null;
+    }
 
 }

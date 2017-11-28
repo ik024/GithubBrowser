@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ik.githubbrowser.BaseActivity;
 import com.ik.githubbrowser.MyRecyclerView;
@@ -23,6 +24,7 @@ import com.ik.githubbrowser.repository.db.entity.events.Event;
 import com.ik.githubbrowser.repository.network.ApiService;
 import com.ik.githubbrowser.repository.network.NetworkInstance;
 import com.ik.githubbrowser.ui.home.EmptyLayout;
+import com.ik.githubbrowser.ui.home.RecyclerViewItemClickListener;
 
 import java.util.List;
 
@@ -32,7 +34,7 @@ import butterknife.ButterKnife;
 import static com.ik.githubbrowser.AppConstants.KEY_USERNAME;
 
 
-public class EventsFragment extends Fragment implements LifecycleOwner {
+public class EventsFragment extends Fragment implements LifecycleOwner, RecyclerViewItemClickListener {
 
     private LifecycleRegistry mRegistry = new LifecycleRegistry(this);
     private String mUsername;
@@ -99,10 +101,25 @@ public class EventsFragment extends Fragment implements LifecycleOwner {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdapter !=null)
+            mAdapter.registerItemClickListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mAdapter != null)
+            mAdapter.unregisterItemClickListener();
+    }
+
     private void populateRecyclerView(List<Event> list) {
         mProgressBar.setVisibility(View.GONE);
         if (mAdapter == null) {
             mAdapter = new EventItemAdapter(list);
+            mAdapter.registerItemClickListener(this);
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.setEmptyView(mEmptyView);
         } else {
@@ -136,7 +153,20 @@ public class EventsFragment extends Fragment implements LifecycleOwner {
         return mRegistry;
     }
 
+    @Override
+    public void onClick(Object object) {
+        View view = (View) object;
+        int position = mRecyclerView.getChildLayoutPosition(view);
+        Event event = mAdapter.getEventAtPosition(position);
+
+        String[] repoUrlSegment = event.getRepo().getUrl().split("/");
+        String repoName = repoUrlSegment[repoUrlSegment.length-1];
+        String userName = repoUrlSegment[repoUrlSegment.length-2];
+        mListener.onEventClicked(userName, repoName);
+    }
+
     public interface FragmentInteraction {
+        void onEventClicked(String repoName, String userName);
     }
 
 }

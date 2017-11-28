@@ -30,5 +30,8 @@ public class ReposFragmentViewModelFactory  implements ViewModelProvider.Factory
         viewModel = (ReposFragmentViewModel) model;
     }
 
+    public static void clear(){
+        viewModel = null;
+    }
 
 }

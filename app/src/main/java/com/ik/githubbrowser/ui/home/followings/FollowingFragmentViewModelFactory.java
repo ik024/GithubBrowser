@@ -10,7 +10,7 @@ public class FollowingFragmentViewModelFactory implements ViewModelProvider.Fact
 
     private Repository mRepository;
     private String mUsername;
-    private static FollowingsFragmentViewModel mViewModel;
+    private static FollowingsFragmentViewModel viewModel;
 
     public FollowingFragmentViewModelFactory(Repository repository, String username) {
         mRepository = repository;
@@ -19,9 +19,13 @@ public class FollowingFragmentViewModelFactory implements ViewModelProvider.Fact
 
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
-        if (mViewModel == null) {
-            mViewModel = new FollowingsFragmentViewModel(mRepository, mUsername);
+        if (viewModel == null) {
+            viewModel = new FollowingsFragmentViewModel(mRepository, mUsername);
         }
-        return (T) mViewModel;
+        return (T) viewModel;
+    }
+
+    public static void clear(){
+        viewModel = null;
     }
 }

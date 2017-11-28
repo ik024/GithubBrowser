@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.ik.githubbrowser.R;
 import com.ik.githubbrowser.repository.db.entity.RepoItem;
+import com.ik.githubbrowser.repository.db.entity.repos.Repo;
+import com.ik.githubbrowser.ui.home.RecyclerViewItemClickListener;
 
 import java.util.List;
 
@@ -18,9 +20,19 @@ import butterknife.ButterKnife;
 public class RepoItemAdapter extends RecyclerView.Adapter<RepoItemAdapter.MyViewHolder> {
 
     private List<RepoItem> mList;
+    private RecyclerViewItemClickListener mItemClickListener;
+
 
     public RepoItemAdapter (List<RepoItem> list) {
         mList = list;
+    }
+
+    public void registerItemClikcListener(RecyclerViewItemClickListener listener){
+        mItemClickListener = listener;
+    }
+
+    public void unregisterItemClickListener(){
+        mItemClickListener = null;
     }
 
     @Override
@@ -51,6 +63,10 @@ public class RepoItemAdapter extends RecyclerView.Adapter<RepoItemAdapter.MyView
         notifyDataSetChanged();
     }
 
+    public RepoItem getRepoAtPosition(int position) {
+        return mList.get(position);
+    }
+
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.tv_repo_name)
@@ -68,6 +84,11 @@ public class RepoItemAdapter extends RecyclerView.Adapter<RepoItemAdapter.MyView
         public MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            itemView.setOnClickListener(view -> {
+                if (mItemClickListener != null)
+                    mItemClickListener.onClick(view);
+            });
         }
     }
 }

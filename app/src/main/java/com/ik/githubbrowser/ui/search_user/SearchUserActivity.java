@@ -3,9 +3,7 @@ package com.ik.githubbrowser.ui.search_user;
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -96,7 +94,7 @@ public class SearchUserActivity extends BaseActivity implements LifecycleRegistr
         progressBar.setVisibility(View.GONE);
 
         if (userExists) {
-            HomeActivity.start(SearchUserActivity.this, username);
+            HomeActivity.open(SearchUserActivity.this, username);
         } else {
             tvError.setVisibility(View.VISIBLE);
         }

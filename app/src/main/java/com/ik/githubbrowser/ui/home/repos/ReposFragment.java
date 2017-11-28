@@ -19,9 +19,12 @@ import com.ik.githubbrowser.MyRecyclerView;
 import com.ik.githubbrowser.R;
 import com.ik.githubbrowser.repository.Repository;
 import com.ik.githubbrowser.repository.RepositoryImpl;
+import com.ik.githubbrowser.repository.db.entity.RepoItem;
+import com.ik.githubbrowser.repository.db.entity.repos.Repo;
 import com.ik.githubbrowser.repository.network.ApiService;
 import com.ik.githubbrowser.repository.network.NetworkInstance;
 import com.ik.githubbrowser.ui.home.EmptyLayout;
+import com.ik.githubbrowser.ui.home.RecyclerViewItemClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +33,7 @@ import timber.log.Timber;
 import static com.ik.githubbrowser.AppConstants.KEY_USERNAME;
 
 
-public class ReposFragment extends Fragment implements LifecycleOwner {
+public class ReposFragment extends Fragment implements LifecycleOwner, RecyclerViewItemClickListener {
 
     @BindView(R.id.rv_repos)
     MyRecyclerView mRecyclerView;
@@ -101,18 +104,31 @@ public class ReposFragment extends Fragment implements LifecycleOwner {
         mViewModel.getUserRepos().observe(this, repos -> {
             if (mAdapter == null) {
                 mAdapter = new RepoItemAdapter(repos);
+                mAdapter.registerItemClikcListener(ReposFragment.this);
                 mRecyclerView.setEmptyView(mEmptyView);
                 mRecyclerView.setAdapter(mAdapter);
             } else {
                 mAdapter.updateList(repos);
             }
 
-                /*if (mRecyclerView.getAdapter() == null) {
-                    mRecyclerView.setAdapter(mAdapter);
-                }*/
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdapter != null)
+            mAdapter.registerItemClikcListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mAdapter != null)
+            mAdapter.unregisterItemClickListener();
+
     }
 
     @Override
@@ -139,7 +155,17 @@ public class ReposFragment extends Fragment implements LifecycleOwner {
         return mRegistry;
     }
 
+    @Override
+    public void onClick(Object object) {
+        View view = (View) object;
+        int position = mRecyclerView.getChildLayoutPosition(view);
+        RepoItem repoItem  = mAdapter.getRepoAtPosition(position);
+        String reposName = repoItem.getRepoName();
+        mListener.onRepoClicked(reposName);
+    }
+
 
     public interface FragmentInteraction {
+        void onRepoClicked(String url);
     }
 }

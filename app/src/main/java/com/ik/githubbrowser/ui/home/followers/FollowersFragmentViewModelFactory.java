@@ -25,4 +25,8 @@ public class FollowersFragmentViewModelFactory implements ViewModelProvider.Fact
         }
         return (T) viewModel;
     }
+
+    public static void clear(){
+        viewModel = null;
+    }
 }

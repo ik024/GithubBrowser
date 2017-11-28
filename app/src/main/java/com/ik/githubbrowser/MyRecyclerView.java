@@ -68,4 +68,5 @@ public class MyRecyclerView extends RecyclerView {
         mEmptyView = view;
         checkIfEmpty();
     }
+
 }

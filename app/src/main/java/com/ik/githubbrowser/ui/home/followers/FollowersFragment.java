@@ -19,16 +19,18 @@ import com.ik.githubbrowser.MyRecyclerView;
 import com.ik.githubbrowser.R;
 import com.ik.githubbrowser.repository.Repository;
 import com.ik.githubbrowser.repository.RepositoryImpl;
+import com.ik.githubbrowser.repository.db.entity.followers.Follower;
 import com.ik.githubbrowser.repository.network.ApiService;
 import com.ik.githubbrowser.repository.network.NetworkInstance;
 import com.ik.githubbrowser.ui.home.EmptyLayout;
+import com.ik.githubbrowser.ui.home.RecyclerViewItemClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.ik.githubbrowser.AppConstants.KEY_USERNAME;
 
-public class FollowersFragment extends Fragment implements LifecycleOwner {
+public class FollowersFragment extends Fragment implements LifecycleOwner, RecyclerViewItemClickListener {
 
     private LifecycleRegistry mRegistry = new LifecycleRegistry(this);
     private FragmentInteraction mListener;
@@ -93,6 +95,7 @@ public class FollowersFragment extends Fragment implements LifecycleOwner {
             mProgressBar.setVisibility(View.GONE);
             if (mAdapter == null) {
                 mAdapter = new FollowerItemAdapter(followers);
+                mAdapter.registerItemClickListener(FollowersFragment.this);
                 mRecyclerView.setEmptyView(mEmptyView);
                 mRecyclerView.setAdapter(mAdapter);
             } else {
@@ -100,6 +103,20 @@ public class FollowersFragment extends Fragment implements LifecycleOwner {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdapter != null)
+            mAdapter.registerItemClickListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mAdapter != null)
+            mAdapter.unregisterClickListener();
     }
 
     @Override
@@ -126,6 +143,15 @@ public class FollowersFragment extends Fragment implements LifecycleOwner {
         return mRegistry;
     }
 
+    @Override
+    public void onClick(Object object) {
+        View view  = (View) object;
+        int position = mRecyclerView.getChildLayoutPosition(view);
+        Follower follower = mAdapter.getFollowerAtPosition(position);
+        mListener.onFollowerClicked(follower.getLogin());
+    }
+
     public interface FragmentInteraction {
+       void onFollowerClicked(String followerUserName);
     }
 }

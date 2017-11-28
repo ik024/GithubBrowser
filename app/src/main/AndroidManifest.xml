@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.search_user.SearchUserActivity">
+        <activity android:name=".ui.search_user.SearchUserActivity"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +23,8 @@
         <activity
             android:name=".ui.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".BaseActivity"></activity>
+        <activity android:name=".BaseActivity" />
+        <activity android:name=".ui.home.WebViewActivity"></activity>
     </application>
 
 </manifest>

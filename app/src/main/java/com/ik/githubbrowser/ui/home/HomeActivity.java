@@ -12,13 +12,17 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.ik.githubbrowser.BaseActivity;
 import com.ik.githubbrowser.R;
 import com.ik.githubbrowser.ui.home.events.EventsFragment;
+import com.ik.githubbrowser.ui.home.events.EventsFragmentViewModelFactory;
 import com.ik.githubbrowser.ui.home.followers.FollowersFragment;
+import com.ik.githubbrowser.ui.home.followers.FollowersFragmentViewModelFactory;
 import com.ik.githubbrowser.ui.home.followings.FollowingsFragment;
 import com.ik.githubbrowser.ui.home.repos.ReposFragment;
+import com.ik.githubbrowser.ui.home.repos.ReposFragmentViewModelFactory;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,11 +43,14 @@ public class HomeActivity extends BaseActivity implements
     @BindView(R.id.tabs)
     TabLayout mTabLayout;
 
+    @BindView(R.id.tv_username)
+    TextView mTvUsername;
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private String username;
 
-    public static void start(Context context, String username){
+    public static void open(Context context, String username){
         Intent intent = new Intent(context, HomeActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(KEY_USERNAME, username);
@@ -65,17 +72,47 @@ public class HomeActivity extends BaseActivity implements
             finish();
         }
 
+        if (savedInstanceState == null) {
+            EventsFragmentViewModelFactory.clear();
+            ReposFragmentViewModelFactory.clear();
+            FollowersFragmentViewModelFactory.clear();
+            FollowersFragmentViewModelFactory.clear();
+        }
+
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        mTvUsername.setText(username);
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         mTabLayout.setupWithViewPager(mViewPager);
+    }
+
+    @Override
+    public void onEventClicked(String userName, String repoName) {
+        String repoUrl = "https://github.com/"+userName+"/"+repoName;
+        WebViewActivity.startActivity(this, repoUrl );
+    }
+
+    @Override
+    public void onRepoClicked(String reposName) {
+        String repoUrl = "https://github.com/"+username+"/"+reposName+"?files=1";
+        WebViewActivity.startActivity(this, repoUrl);
+    }
+
+    @Override
+    public void onFollowerClicked(String followerUserName) {
+        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_USERNAME, followerUserName);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     private class SectionsPagerAdapter extends FragmentStatePagerAdapter {
