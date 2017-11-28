@@ -20,16 +20,18 @@ import com.ik.githubbrowser.MyRecyclerView;
 import com.ik.githubbrowser.R;
 import com.ik.githubbrowser.repository.Repository;
 import com.ik.githubbrowser.repository.RepositoryImpl;
+import com.ik.githubbrowser.repository.db.entity.followings.Following;
 import com.ik.githubbrowser.repository.network.ApiService;
 import com.ik.githubbrowser.repository.network.NetworkInstance;
 import com.ik.githubbrowser.ui.home.EmptyLayout;
+import com.ik.githubbrowser.ui.home.RecyclerViewItemClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.ik.githubbrowser.AppConstants.KEY_USERNAME;
 
-public class FollowingsFragment extends Fragment implements LifecycleOwner {
+public class FollowingsFragment extends Fragment implements LifecycleOwner, RecyclerViewItemClickListener {
 
     @BindView(R.id.rv_followings)
     MyRecyclerView mRecyclerView;
@@ -100,6 +102,20 @@ public class FollowingsFragment extends Fragment implements LifecycleOwner {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdapter!= null)
+            mAdapter.registerItemClickListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mAdapter != null)
+            mAdapter.unregisterItemClickListener();
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof FragmentInteraction) {
@@ -123,7 +139,15 @@ public class FollowingsFragment extends Fragment implements LifecycleOwner {
         return mRegistry;
     }
 
-    public interface FragmentInteraction {
+    @Override
+    public void onClick(Object object) {
+        View view = (View) object;
+        int position = mRecyclerView.getChildLayoutPosition(view);
+        Following following = mAdapter.getFollowingAtPosition(position);
+        mListener.onFollowingClicked(following.getLogin());
+    }
 
+    public interface FragmentInteraction {
+        void onFollowingClicked(String followerUserName);
     }
 }

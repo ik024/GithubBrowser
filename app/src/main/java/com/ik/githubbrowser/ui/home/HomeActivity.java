@@ -20,6 +20,7 @@ import com.ik.githubbrowser.ui.home.events.EventsFragment;
 import com.ik.githubbrowser.ui.home.events.EventsFragmentViewModelFactory;
 import com.ik.githubbrowser.ui.home.followers.FollowersFragment;
 import com.ik.githubbrowser.ui.home.followers.FollowersFragmentViewModelFactory;
+import com.ik.githubbrowser.ui.home.followings.FollowingFragmentViewModelFactory;
 import com.ik.githubbrowser.ui.home.followings.FollowingsFragment;
 import com.ik.githubbrowser.ui.home.repos.ReposFragment;
 import com.ik.githubbrowser.ui.home.repos.ReposFragmentViewModelFactory;
@@ -76,7 +77,7 @@ public class HomeActivity extends BaseActivity implements
             EventsFragmentViewModelFactory.clear();
             ReposFragmentViewModelFactory.clear();
             FollowersFragmentViewModelFactory.clear();
-            FollowersFragmentViewModelFactory.clear();
+            FollowingFragmentViewModelFactory.clear();
         }
 
         ButterKnife.bind(this);
@@ -108,6 +109,15 @@ public class HomeActivity extends BaseActivity implements
 
     @Override
     public void onFollowerClicked(String followerUserName) {
+        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_USERNAME, followerUserName);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onFollowingClicked(String followerUserName) {
         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(KEY_USERNAME, followerUserName);
