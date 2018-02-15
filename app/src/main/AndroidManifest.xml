@@ -12,8 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.search_user.SearchUserActivity"
-            >
+        <activity android:name=".ui.search_user.SearchUserActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +23,13 @@
             android:name=".ui.home.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".BaseActivity" />
-        <activity android:name=".ui.home.WebViewActivity"></activity>
+        <activity android:name=".ui.home.WebViewActivity" />
+
+        <provider
+            android:name=".repository.db.GItProvider"
+            android:authorities="com.ik.githubbrowser"
+            android:enabled="true"
+            android:exported="false"></provider>
     </application>
 
 </manifest>

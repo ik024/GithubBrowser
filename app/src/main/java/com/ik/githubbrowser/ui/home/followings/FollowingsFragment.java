@@ -92,6 +92,7 @@ public class FollowingsFragment extends Fragment implements LifecycleOwner, Recy
             mProgressBar.setVisibility(View.GONE);
             if (mAdapter == null) {
                 mAdapter = new FollowingItemAdapter(followings);
+                mAdapter.registerItemClickListener(FollowingsFragment.this);
                 mRecyclerView.setEmptyView(mEmptyView);
                 mRecyclerView.setAdapter(mAdapter);
             } else {

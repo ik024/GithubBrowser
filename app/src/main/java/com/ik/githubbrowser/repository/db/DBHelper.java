@@ -1,4 +1,4 @@
-package com.ik.movienow.common.data;
+package com.ik.githubbrowser.repository.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,12 +21,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(DataContract.Favourites.CREATE_TABLE_FAVOURITE);
+        db.execSQL(DataContract.LastVisitedUser.CREATE_TABLE_FAVOURITE_USERNAME);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS "+DataContract.Favourites.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS "+ DataContract.LastVisitedUser.TABLE_NAME);
         onCreate(db);
     }
 }

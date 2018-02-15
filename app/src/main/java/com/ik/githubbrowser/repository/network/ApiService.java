@@ -15,24 +15,25 @@ import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
 
     @GET("users/{userName}")
-    Observable<UserInfo> getUserInfo(@Path("userName") String userName);
+    Observable<UserInfo> getUserInfo(@Path("userName") String userName, @Query("access_token") String token);
 
     @GET("users/{userName}/events")
-    Observable<List<Event>> getUserEvents(@Path("userName") String userName);
+    Observable<List<Event>> getUserEvents(@Path("userName") String userName, @Query("access_token") String token);
 
     @GET("users/{userName}/repos")
-    Observable<List<Repo>> getUserRepos(@Path("userName") String userName);
+    Observable<List<Repo>> getUserRepos(@Path("userName") String userName, @Query("access_token") String token);
 
     @GET("repos/{userName}/{repoName}/commits")
-    Call<List<CommitObject>> getRepoCommits(@Path("userName") String userName, @Path("repoName") String repoName);
+    Call<List<CommitObject>> getRepoCommits(@Path("userName") String userName, @Path("repoName") String repoName, @Query("access_token") String token);
 
     @GET("users/{userName}/followers")
-    Observable<List<Follower>> getUserFollowers(@Path("userName") String userName);
+    Observable<List<Follower>> getUserFollowers(@Path("userName") String userName, @Query("access_token") String token);
 
     @GET("users/{userName}/following")
-    Observable<List<Following>> getUserFollowing(@Path("userName") String userName);
+    Observable<List<Following>> getUserFollowing(@Path("userName") String userName, @Query("access_token") String token);
 }

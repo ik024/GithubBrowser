@@ -62,7 +62,7 @@ public class NetworkInstance {
      */
     private void createNetworkStack(Context context) {
 
-        String DEFAULT_BASE_URL = "https://api.github.com/";
+        String DEFAULT_BASE_URL = "http://api.github.com/";
 
         OkHttpClient okHttpClient = createOkHttpClient(context);
 
