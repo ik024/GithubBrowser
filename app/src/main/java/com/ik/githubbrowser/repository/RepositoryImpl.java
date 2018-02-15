@@ -1,6 +1,7 @@
 package com.ik.githubbrowser.repository;
 
 
+import com.ik.githubbrowser.BuildConfig;
 import com.ik.githubbrowser.repository.db.entity.RepoItem;
 import com.ik.githubbrowser.repository.db.entity.UserInfo;
 import com.ik.githubbrowser.repository.db.entity.commits.CommitList;
@@ -32,7 +33,7 @@ public class RepositoryImpl implements Repository{
     @Override
     public Observable<UserInfo> getUserInfo(String userName) {
         //TODO: check in local db
-        return apiService.getUserInfo(userName);
+        return apiService.getUserInfo(userName, BuildConfig.ACCESS_TOKEN);
 
     }
 
@@ -40,13 +41,13 @@ public class RepositoryImpl implements Repository{
     public Observable<List<Event>> getUserEvents(String userName) {
         //TODO: check in local db
 
-        return apiService.getUserEvents(userName);
+        return apiService.getUserEvents(userName, BuildConfig.ACCESS_TOKEN);
     }
 
     @Override
     public Observable<List<RepoItem>> getUserRepos(String userName) {
         //TODO: check in local db
-        return apiService.getUserRepos(userName)
+        return apiService.getUserRepos(userName, BuildConfig.ACCESS_TOKEN)
                 .flatMap(repos -> {
                     List<RepoItem> repoItemList = new ArrayList<>();
                     return Observable.create(e -> {
@@ -55,7 +56,7 @@ public class RepositoryImpl implements Repository{
                             String repoName = repo.getName();
                             String repoDesc = repo.getDescription();
 
-                            List<CommitObject> commits = apiService.getRepoCommits(userName, repoName).execute().body();
+                            List<CommitObject> commits = apiService.getRepoCommits(userName, repoName, BuildConfig.ACCESS_TOKEN).execute().body();
                             repoItem.setRepoName(repoName);
                             repoItem.setRepoDesc(repoDesc == null ? "No description" : repoDesc);
                             repoItem.setCommitCount(commits == null ? 0 : commits.size());
@@ -71,12 +72,12 @@ public class RepositoryImpl implements Repository{
 
     @Override
     public Observable<List<Follower>> getUserFollowers(String userName) {
-        return apiService.getUserFollowers(userName);
+        return apiService.getUserFollowers(userName, BuildConfig.ACCESS_TOKEN);
     }
 
     @Override
     public Observable<List<Following>> getUserFollowings(String userName) {
-        return apiService.getUserFollowing(userName);
+        return apiService.getUserFollowing(userName, BuildConfig.ACCESS_TOKEN);
     }
 
 

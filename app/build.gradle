@@ -4,6 +4,12 @@ apply plugin: 'com.jakewharton.butterknife'
 android {
     compileSdkVersion 27
     buildToolsVersion '27.0.0'
+
+    // Load values from keystore.properties file
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
+    def keystoreProperties = new Properties()
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
     defaultConfig {
         applicationId "com.ik.githubbrowser"
         minSdkVersion 17
@@ -12,6 +18,9 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+
+        // Create BuildConfig variables
+        buildConfigField "String", "ACCESS_TOKEN", keystoreProperties["ACCESS_TOKEN"]
     }
     buildTypes {
         release {
